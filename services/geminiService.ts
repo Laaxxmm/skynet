@@ -2,9 +2,11 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { ExtractionResult, Agreement } from "../types";
 
+import { saveAgreement } from '../services/databaseService';
+
 // Initialize Gemini Client
 // In a real production app, this should be proxied through a backend to protect the key.
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GOOGLE_API_KEY || '' });
+const ai = new GoogleGenAI({ apiKey: (import.meta.env.VITE_GOOGLE_API_KEY || '').trim() });
 
 const MODEL_NAME = 'gemini-2.5-flash';
 
@@ -15,7 +17,8 @@ export const extractAgreementData = async (
   fileBase64: string,
   mimeType: string
 ): Promise<ExtractionResult> => {
-  if (!import.meta.env.VITE_GOOGLE_API_KEY) {
+  const apiKey = (import.meta.env.VITE_GOOGLE_API_KEY || '').trim();
+  if (!apiKey) {
     console.warn("No API Key found. Returning mock data.");
     return mockExtraction();
   }
@@ -35,6 +38,8 @@ export const extractAgreementData = async (
             text: `Analyze this legal document image/pdf. 
             
             1. Extract the following details into the JSON structure: type, partyA, partyB, startDate, renewalDate, expiryDate, location, summary.
+            IMPORTANT: For 'location', extract ONLY the City and State (e.g., "Bangalore, Karnataka"). Do not include full address.
+            
             2. Extract the FULL TEXT content of the document into the 'fullText' field. Use Markdown formatting to preserve headers, bold text, lists, and structure. accurate OCR is critical.`
           },
         ],
@@ -63,10 +68,13 @@ export const extractAgreementData = async (
 
     const result = JSON.parse(text) as ExtractionResult;
 
-    // Save to Supabase (fire and forget)
-    import('../services/databaseService').then(({ saveAgreement }) => {
-      saveAgreement(result);
-    });
+    // Save to Supabase (Awaited to ensure persistence)
+    try {
+      await saveAgreement(result);
+    } catch (dbError) {
+      console.error("Failed to save to Supabase:", dbError);
+      // We don't throw here because we still want to return the result to the UI
+    }
 
     return result;
 
@@ -82,7 +90,8 @@ export const extractAgreementData = async (
 export const generateRenewalDraft = async (
   agreement: Agreement
 ): Promise<string> => {
-  if (!import.meta.env.VITE_GOOGLE_API_KEY) return mockRenewalDraft(agreement);
+  const apiKey = (import.meta.env.VITE_GOOGLE_API_KEY || '').trim();
+  if (!apiKey) return mockRenewalDraft(agreement);
 
   try {
     let prompt = "";
