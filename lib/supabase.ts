@@ -21,7 +21,10 @@ const validateUrl = (url: string | undefined) => {
     return true;
   } catch {
     return false;
-    const finalUrl = supabaseUrl || 'https://placeholder.supabase.co';
-    const finalKey = supabaseAnonKey || 'placeholder';
+  }
+};
 
-    export const supabase = createClient(finalUrl, finalKey);
+const finalUrl = validateUrl(supabaseUrl) ? supabaseUrl : 'https://placeholder.supabase.co';
+const finalKey = supabaseAnonKey || 'placeholder';
+
+export const supabase = createClient(finalUrl!, finalKey);
