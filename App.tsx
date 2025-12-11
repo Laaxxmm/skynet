@@ -160,10 +160,7 @@ export default function App() {
   const [settings, setSettings] = useState<AppSettings>(INITIAL_SETTINGS);
   const [notificationStatus, setNotificationStatus] = useState<{ loading: boolean, message: string | null }>({ loading: false, message: null });
 
-  // DEBUG: Test Fetch
-  const [debugLog, setDebugLog] = useState<string[]>([]);
 
-  // Computed Stats
   const stats: DashboardStats = useMemo(() => {
     return {
       total: agreements.length,
@@ -203,46 +200,6 @@ export default function App() {
 
   const handleAgreementUpdate = (updated: Agreement) => {
     setAgreements(prev => prev.map(a => a.id === updated.id ? updated : a));
-  };
-
-  const runDebug = async () => {
-    const url = (import.meta.env.VITE_SUPABASE_URL || '').trim();
-    // Same aggressive sanitization as lib/supabase.ts
-    const rawKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-    const key = rawKey.replace(/[^a-zA-Z0-9\.\-\_]/g, '');
-
-    const logs = [];
-    logs.push(`URL: ${url}`);
-    logs.push(`Key Raw Length: ${rawKey.length}`);
-    logs.push(`Key Clean Length: ${key.length}`);
-
-    if (key.length > 0) {
-      logs.push(`Key Start Code: ${key.charCodeAt(0)}`);
-      logs.push(`Key End Code: ${key.charCodeAt(key.length - 1)}`);
-    }
-
-    try {
-      logs.push("--- TEST 1: No Headers ---");
-      // This should fail with 401/404 but NOT "Invalid value"
-      const res1 = await fetch(`${url}/rest/v1/`);
-      logs.push(`Test 1 Status: ${res1.status} (URL is OK)`);
-    } catch (e: any) {
-      logs.push(`Test 1 Failed: ${e.message}`);
-    }
-
-    try {
-      logs.push("--- TEST 2: With Headers ---");
-      const res2 = await fetch(`${url}/rest/v1/`, {
-        headers: {
-          'apikey': key,
-          'Authorization': `Bearer ${key}`
-        }
-      });
-      logs.push(`Test 2 Status: ${res2.status}`);
-    } catch (e: any) {
-      logs.push(`Test 2 Failed: ${e.message}`);
-    }
-    setDebugLog(logs);
   };
 
   const handleSendNotifications = async () => {
@@ -289,16 +246,7 @@ export default function App() {
 
 
   if (!session) {
-    return (
-      <div className="flex flex-col items-center">
-        <div className="bg-black text-green-400 p-4 w-full max-w-md mb-4 text-xs font-mono">
-          <h3 className="font-bold border-b border-green-800 mb-2">DEBUG CONSOLE</h3>
-          <button onClick={runDebug} className="bg-green-900 text-white px-2 py-1 mb-2">RUN DIAGNOSTIC</button>
-          {debugLog.map((l, i) => <div key={i}>{l}</div>)}
-        </div>
-        <Auth />
-      </div>
-    );
+    return <Auth />;
   }
 
   return (
