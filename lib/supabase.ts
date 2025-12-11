@@ -8,6 +8,12 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('Missing Supabase URL or Anon Key. Authentication will not work.');
 }
 
+console.log('Supabase Config:', {
+  url: supabaseUrl ? 'Found' : 'Missing',
+  key: supabaseAnonKey ? 'Found' : 'Missing',
+  rawUrl: supabaseUrl
+});
+
 export const supabase = createClient(
   supabaseUrl || 'https://placeholder.supabase.co',
   supabaseAnonKey || 'placeholder'
