@@ -160,6 +160,9 @@ export default function App() {
   const [settings, setSettings] = useState<AppSettings>(INITIAL_SETTINGS);
   const [notificationStatus, setNotificationStatus] = useState<{ loading: boolean, message: string | null }>({ loading: false, message: null });
 
+  // DEBUG: Test Fetch
+  const [debugLog, setDebugLog] = useState<string[]>([]);
+
   // Computed Stats
   const stats: DashboardStats = useMemo(() => {
     return {
@@ -200,6 +203,32 @@ export default function App() {
 
   const handleAgreementUpdate = (updated: Agreement) => {
     setAgreements(prev => prev.map(a => a.id === updated.id ? updated : a));
+  };
+
+  const runDebug = async () => {
+    const url = (import.meta.env.VITE_SUPABASE_URL || '').trim();
+    const key = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
+
+    const logs = [];
+    logs.push(`URL Length: ${url?.length}`);
+    logs.push(`Key Length: ${key?.length}`);
+    if (url) {
+      logs.push(`URL Code: ${url.charCodeAt(0)}...${url.charCodeAt(url.length - 1)}`);
+    }
+
+    try {
+      logs.push("Attempting manual fetch...");
+      const res = await fetch(`${url}/rest/v1/`, {
+        headers: {
+          'apikey': key,
+          'Authorization': `Bearer ${key}`
+        }
+      });
+      logs.push(`Fetch Status: ${res.status}`);
+    } catch (e: any) {
+      logs.push(`Fetch Error: ${e.message}`);
+    }
+    setDebugLog(logs);
   };
 
   const handleSendNotifications = async () => {
@@ -243,32 +272,7 @@ export default function App() {
     return <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-500">Loading...</div>;
   }
 
-  // DEBUG: Test Fetch
-  const [debugLog, setDebugLog] = useState<string[]>([]);
 
-  const runDebug = async () => {
-    const url = import.meta.env.VITE_SUPABASE_URL;
-    const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-    const logs = [];
-    logs.push(`URL Length: ${url?.length}`);
-    logs.push(`Key Length: ${key?.length}`);
-    logs.push(`URL Code: ${url?.charCodeAt(0)}...${url?.charCodeAt(url.length - 1)}`);
-
-    try {
-      logs.push("Attempting manual fetch...");
-      const res = await fetch(`${url}/rest/v1/`, {
-        headers: {
-          'apikey': key,
-          'Authorization': `Bearer ${key}`
-        }
-      });
-      logs.push(`Fetch Status: ${res.status}`);
-    } catch (e: any) {
-      logs.push(`Fetch Error: ${e.message}`);
-    }
-    setDebugLog(logs);
-  };
 
   if (!session) {
     return (
