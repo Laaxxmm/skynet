@@ -1,8 +1,15 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || '').trim();
-const supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
+let supabaseUrl = '';
+let supabaseAnonKey = '';
+
+try {
+  supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || '').trim();
+  supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
+} catch (e) {
+  console.error('Error loading env vars:', e);
+}
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('Missing Supabase URL or Anon Key. Authentication will not work.');
