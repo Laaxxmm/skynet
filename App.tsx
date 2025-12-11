@@ -243,8 +243,44 @@ export default function App() {
     return <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-500">Loading...</div>;
   }
 
+  // DEBUG: Test Fetch
+  const [debugLog, setDebugLog] = useState<string[]>([]);
+
+  const runDebug = async () => {
+    const url = import.meta.env.VITE_SUPABASE_URL;
+    const key = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+    const logs = [];
+    logs.push(`URL Length: ${url?.length}`);
+    logs.push(`Key Length: ${key?.length}`);
+    logs.push(`URL Code: ${url?.charCodeAt(0)}...${url?.charCodeAt(url.length - 1)}`);
+
+    try {
+      logs.push("Attempting manual fetch...");
+      const res = await fetch(`${url}/rest/v1/`, {
+        headers: {
+          'apikey': key,
+          'Authorization': `Bearer ${key}`
+        }
+      });
+      logs.push(`Fetch Status: ${res.status}`);
+    } catch (e: any) {
+      logs.push(`Fetch Error: ${e.message}`);
+    }
+    setDebugLog(logs);
+  };
+
   if (!session) {
-    return <Auth />;
+    return (
+      <div className="flex flex-col items-center">
+        <div className="bg-black text-green-400 p-4 w-full max-w-md mb-4 text-xs font-mono">
+          <h3 className="font-bold border-b border-green-800 mb-2">DEBUG CONSOLE</h3>
+          <button onClick={runDebug} className="bg-green-900 text-white px-2 py-1 mb-2">RUN DIAGNOSTIC</button>
+          {debugLog.map((l, i) => <div key={i}>{l}</div>)}
+        </div>
+        <Auth />
+      </div>
+    );
   }
 
   return (
