@@ -207,26 +207,40 @@ export default function App() {
 
   const runDebug = async () => {
     const url = (import.meta.env.VITE_SUPABASE_URL || '').trim();
-    const key = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
+    // Same aggressive sanitization as lib/supabase.ts
+    const rawKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+    const key = rawKey.replace(/[^a-zA-Z0-9\.\-\_]/g, '');
 
     const logs = [];
-    logs.push(`URL Length: ${url?.length}`);
-    logs.push(`Key Length: ${key?.length}`);
-    if (url) {
-      logs.push(`URL Code: ${url.charCodeAt(0)}...${url.charCodeAt(url.length - 1)}`);
+    logs.push(`URL: ${url}`);
+    logs.push(`Key Raw Length: ${rawKey.length}`);
+    logs.push(`Key Clean Length: ${key.length}`);
+
+    if (key.length > 0) {
+      logs.push(`Key Start Code: ${key.charCodeAt(0)}`);
+      logs.push(`Key End Code: ${key.charCodeAt(key.length - 1)}`);
     }
 
     try {
-      logs.push("Attempting manual fetch...");
-      const res = await fetch(`${url}/rest/v1/`, {
+      logs.push("--- TEST 1: No Headers ---");
+      // This should fail with 401/404 but NOT "Invalid value"
+      const res1 = await fetch(`${url}/rest/v1/`);
+      logs.push(`Test 1 Status: ${res1.status} (URL is OK)`);
+    } catch (e: any) {
+      logs.push(`Test 1 Failed: ${e.message}`);
+    }
+
+    try {
+      logs.push("--- TEST 2: With Headers ---");
+      const res2 = await fetch(`${url}/rest/v1/`, {
         headers: {
           'apikey': key,
           'Authorization': `Bearer ${key}`
         }
       });
-      logs.push(`Fetch Status: ${res.status}`);
+      logs.push(`Test 2 Status: ${res2.status}`);
     } catch (e: any) {
-      logs.push(`Fetch Error: ${e.message}`);
+      logs.push(`Test 2 Failed: ${e.message}`);
     }
     setDebugLog(logs);
   };

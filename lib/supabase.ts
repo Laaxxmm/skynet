@@ -6,7 +6,9 @@ let supabaseAnonKey = '';
 
 try {
   supabaseUrl = (import.meta.env.VITE_SUPABASE_URL || '').trim();
-  supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
+  // Aggressively sanitize key: Remove anything that is NOT a letter, number, dot, hyphen, or underscore.
+  // This removes hidden characters, newlines, quotes, etc.
+  supabaseAnonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').replace(/[^a-zA-Z0-9\.\-\_]/g, '');
 } catch (e) {
   console.error('Error loading env vars:', e);
 }
