@@ -1,0 +1,5 @@
+{
+  "name": "Skynet Dashboard",
+  "description": "A robust legal document management system that uses Gemini AI to extract metadata from agreement PDFs, track expiry dates, and auto-generate renewal drafts with e-signature capabilities.",
+  "requestFramePermissions": []
+}
