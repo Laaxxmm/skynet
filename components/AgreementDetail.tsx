@@ -214,7 +214,7 @@ export const AgreementDetail: React.FC<AgreementDetailProps> = ({ agreement, onB
               <button onClick={() => setShowOriginalModal(false)} className="hover:bg-slate-700 p-1 rounded">✕</button>
             </div>
             <div className="flex-1 overflow-y-auto bg-slate-200 p-4 md:p-8 flex justify-center">
-              <div className="bg-white shadow-lg border border-slate-300 h-fit w-full max-w-[210mm] min-h-[297mm] p-10 md:p-16 mx-auto text-slate-900 font-serif text-justify leading-relaxed break-words prose prose-sm max-w-none">
+              <div className="bg-white shadow-lg border border-slate-300 h-fit w-full max-w-[210mm] min-h-[297mm] p-10 md:p-16 mx-auto text-slate-900 font-serif text-justify leading-relaxed break-words prose prose-sm max-w-none whitespace-pre-wrap">
                 <ReactMarkdown>{agreement.rawContent || "Document content unavailable."}</ReactMarkdown>
               </div>
             </div>
@@ -255,7 +255,7 @@ export const AgreementDetail: React.FC<AgreementDetailProps> = ({ agreement, onB
                     className="w-full h-full min-h-[60vh] p-4 border border-indigo-200 rounded-md focus:ring-2 focus:ring-indigo-500 focus:outline-none font-serif text-slate-800 text-base leading-7 resize-y whitespace-pre-wrap"
                   />
                 ) : (
-                  <div className="font-serif text-slate-900 text-base leading-7 text-justify break-words prose prose-sm max-w-none">
+                  <div className="font-serif text-slate-900 text-base leading-7 text-justify break-words prose prose-sm max-w-none whitespace-pre-wrap">
                     <ReactMarkdown>{draftContent}</ReactMarkdown>
                   </div>
                 )}

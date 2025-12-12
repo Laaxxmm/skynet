@@ -42,7 +42,11 @@ export const extractAgreementData = async (
             - For 'location', extract ONLY the City and State (e.g., "Bangalore, Karnataka"). Do not include full address.
             - For 'renewalDate', 'startDate', 'expiryDate': Extract ONLY the date in YYYY-MM-DD format. If the date is not explicitly mentioned as a specific calendar date, return null. DO NOT return clauses or sentences like "Renewable at option of...".
             
-            2. Extract the FULL TEXT content of the document into the 'fullText' field. Use Markdown formatting to preserve headers, bold text, lists, and structure. accurate OCR is critical.`
+            2. Extract the FULL TEXT content of the document into the 'fullText' field. 
+            IMPORTANT FORMATTING INSTRUCTIONS:
+            - Use Markdown formatting (headers, bold, lists).
+            - INSERT DOUBLE NEWLINES (\n\n) between every paragraph and section to ensure proper spacing. 
+            - Do not return a single block of text. Structure it clearly.`
           },
         ],
       },
@@ -129,7 +133,8 @@ export const generateRenewalDraft = async (
         3. **Signatures**: 
            - Keep the signatory sections but replace the signatures with "[Pending E-Signature]".
         
-        Output the full, professional legal text in Markdown.
+        Output the full, professional legal text in Markdown. 
+        CRITICAL: Use DOUBLE NEWLINES (\n\n) between all paragraphs and clauses to ensure proper rendering.
       `;
     } else {
       // Fallback Mode: Generate from scratch
