@@ -10,15 +10,21 @@ export const saveAgreement = async (agreement: ExtractionResult | Agreement) => 
         return null;
     }
 
-    // Sanitize data: PostgreSQL date columns fail on empty strings. Convert to null.
+    // Sanitize data: PostgreSQL date columns fail on empty strings or "null" strings.
     // Also remove 'id' to let the database generate a valid UUID v4
     const { id, ...rest } = agreement;
 
+    const sanitizeDate = (val: string | null | undefined) => {
+        if (!val) return null;
+        if (typeof val === 'string' && (val.trim() === '' || val.toLowerCase() === 'null')) return null;
+        return val;
+    };
+
     const sanitizedAgreement = {
         ...rest,
-        startDate: agreement.startDate || null,
-        renewalDate: agreement.renewalDate || null,
-        expiryDate: agreement.expiryDate || null,
+        startDate: sanitizeDate(agreement.startDate),
+        renewalDate: sanitizeDate(agreement.renewalDate),
+        expiryDate: sanitizeDate(agreement.expiryDate),
     };
 
     const { data, error } = await supabase
