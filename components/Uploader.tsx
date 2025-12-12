@@ -59,7 +59,9 @@ export const Uploader: React.FC<UploaderProps> = ({ onUploadComplete, onCancel }
             const { error: dbError } = await saveAgreement(newAgreement);
             if (dbError) {
               console.error("Failed to save to database:", dbError);
-              setError(`Saved locally, but failed to sync to database: ${dbError.message}`);
+              const msg = `Database Save Failed: ${dbError.message}. Details: ${dbError.details || ''} Hint: ${dbError.hint || ''}`;
+              alert(msg);
+              setError(msg);
             }
           } catch (e: any) {
             console.error("Unexpected DB Error:", e);

@@ -11,8 +11,11 @@ export const saveAgreement = async (agreement: ExtractionResult | Agreement) => 
     }
 
     // Sanitize data: PostgreSQL date columns fail on empty strings. Convert to null.
+    // Also remove 'id' to let the database generate a valid UUID v4
+    const { id, ...rest } = agreement;
+
     const sanitizedAgreement = {
-        ...agreement,
+        ...rest,
         startDate: agreement.startDate || null,
         renewalDate: agreement.renewalDate || null,
         expiryDate: agreement.expiryDate || null,
