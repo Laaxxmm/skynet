@@ -83,6 +83,16 @@ export default function App() {
     });
   }, [agreements, searchQuery, statusFilter]);
 
+  // Grouped Agreements
+  const groupedAgreements = useMemo(() => {
+    return filteredAgreements.reduce((acc, agreement) => {
+      const type = agreement.type || 'Uncategorized';
+      if (!acc[type]) acc[type] = [];
+      acc[type].push(agreement);
+      return acc;
+    }, {} as Record<string, Agreement[]>);
+  }, [filteredAgreements]);
+
   const handleUpload = (newAgreement: Agreement) => {
     setAgreements(prev => [newAgreement, ...prev]);
     setShowUploader(false);
@@ -278,68 +288,69 @@ export default function App() {
                 <div className="overflow-x-auto flex-1">
                   {view === 'grouped' ? (
                     <div className="p-6 space-y-8">
-                      {Object.entries(filteredAgreements.reduce((acc, agreement) => {
-                        const type = agreement.type || 'Uncategorized';
-                        if (!acc[type]) acc[type] = [];
-                        acc[type].push(agreement);
-                        return acc;
-                      }, {} as Record<string, Agreement[]>)).map(([type, groupAgreements]) => (
-                        <div key={type} className="border border-slate-200 rounded-xl overflow-hidden">
-                          <div className="bg-slate-100 px-6 py-3 font-bold text-slate-700 border-b border-slate-200 flex justify-between items-center">
-                            <span>{type}</span>
-                            <span className="text-xs bg-white px-2 py-1 rounded border border-slate-300">{groupAgreements.length}</span>
-                          </div>
-                          <table className="w-full text-left border-collapse">
-                            <thead className="bg-slate-50 text-slate-500 text-xs uppercase font-semibold">
-                              <tr>
-                                <th className="px-6 py-4">Counterparty</th>
-                                <th className="px-6 py-4">Location</th>
-                                <th className="px-6 py-4">Expiry Date</th>
-                                <th className="px-6 py-4">Status</th>
-                                <th className="px-6 py-4">Action</th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100 text-sm">
-                              {groupAgreements.map(item => (
-                                <tr key={item.id} className="hover:bg-slate-50 transition-colors">
-                                  <td className="px-6 py-4 font-medium text-slate-800">{item.partyB}</td>
-                                  <td className="px-6 py-4 text-slate-600">{item.location}</td>
-                                  <td className="px-6 py-4 text-slate-600 font-mono">{item.expiryDate}</td>
-                                  <td className="px-6 py-4">
-                                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${statusBadgeColor(item.status)}`}>
-                                      {item.status}
-                                    </span>
-                                  </td>
-                                  <td className="px-6 py-4">
-                                    <button
-                                      onClick={() => { setSelectedAgreementId(item.id); setView('detail'); }}
-                                      className="text-indigo-600 hover:text-indigo-800 font-medium text-xs border border-indigo-200 px-3 py-1 rounded hover:bg-indigo-50 mr-2"
-                                    >
-                                      Manage
-                                    </button>
-                                    <button
-                                      onClick={async (e) => {
-                                        e.stopPropagation();
-                                        if (window.confirm('Are you sure you want to delete this agreement?')) {
-                                          const { error } = await deleteAgreement(item.id);
-                                          if (error) {
-                                            alert('Failed to delete agreement');
-                                          } else {
-                                            setAgreements(prev => prev.filter(a => a.id !== item.id));
-                                          }
-                                        }
-                                      }}
-                                      className="text-red-600 hover:text-red-800 font-medium text-xs border border-red-200 px-3 py-1 rounded hover:bg-red-50"
-                                    >
-                                      Delete
-                                    </button>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
+                      {Object.keys(groupedAgreements).length === 0 ? (
+                        <div className="text-center py-12 text-slate-400">
+                          <Filter className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                          <p>No agreements found to group.</p>
                         </div>
-                      ))}
+                      ) : (
+                        Object.entries(groupedAgreements).map(([type, groupAgreements]) => (
+                          <div key={type} className="border border-slate-200 rounded-xl overflow-hidden">
+                            <div className="bg-slate-100 px-6 py-3 font-bold text-slate-700 border-b border-slate-200 flex justify-between items-center">
+                              <span>{type}</span>
+                              <span className="text-xs bg-white px-2 py-1 rounded border border-slate-300">{groupAgreements.length}</span>
+                            </div>
+                            <table className="w-full text-left border-collapse">
+                              <thead className="bg-slate-50 text-slate-500 text-xs uppercase font-semibold">
+                                <tr>
+                                  <th className="px-6 py-4">Counterparty</th>
+                                  <th className="px-6 py-4">Location</th>
+                                  <th className="px-6 py-4">Expiry Date</th>
+                                  <th className="px-6 py-4">Status</th>
+                                  <th className="px-6 py-4">Action</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-100 text-sm">
+                                {groupAgreements.map(item => (
+                                  <tr key={item.id} className="hover:bg-slate-50 transition-colors">
+                                    <td className="px-6 py-4 font-medium text-slate-800">{item.partyB}</td>
+                                    <td className="px-6 py-4 text-slate-600">{item.location}</td>
+                                    <td className="px-6 py-4 text-slate-600 font-mono">{item.expiryDate}</td>
+                                    <td className="px-6 py-4">
+                                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${statusBadgeColor(item.status)}`}>
+                                        {item.status}
+                                      </span>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                      <button
+                                        onClick={() => { setSelectedAgreementId(item.id); setView('detail'); }}
+                                        className="text-indigo-600 hover:text-indigo-800 font-medium text-xs border border-indigo-200 px-3 py-1 rounded hover:bg-indigo-50 mr-2"
+                                      >
+                                        Manage
+                                      </button>
+                                      <button
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          if (window.confirm('Are you sure you want to delete this agreement?')) {
+                                            const { error } = await deleteAgreement(item.id);
+                                            if (error) {
+                                              alert('Failed to delete agreement');
+                                            } else {
+                                              setAgreements(prev => prev.filter(a => a.id !== item.id));
+                                            }
+                                          }
+                                        }}
+                                        className="text-red-600 hover:text-red-800 font-medium text-xs border border-red-200 px-3 py-1 rounded hover:bg-red-50"
+                                      >
+                                        Delete
+                                      </button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        )))}
                     </div>
                   ) : (
                     <table className="w-full text-left border-collapse">
