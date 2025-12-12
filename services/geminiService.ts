@@ -38,7 +38,9 @@ export const extractAgreementData = async (
             text: `Analyze this legal document image/pdf. 
             
             1. Extract the following details into the JSON structure: type, partyA, partyB, startDate, renewalDate, expiryDate, location, summary.
-            IMPORTANT: For 'location', extract ONLY the City and State (e.g., "Bangalore, Karnataka"). Do not include full address.
+            IMPORTANT: 
+            - For 'location', extract ONLY the City and State (e.g., "Bangalore, Karnataka"). Do not include full address.
+            - For 'renewalDate', 'startDate', 'expiryDate': Extract ONLY the date in YYYY-MM-DD format. If the date is not explicitly mentioned as a specific calendar date, return null. DO NOT return clauses or sentences like "Renewable at option of...".
             
             2. Extract the FULL TEXT content of the document into the 'fullText' field. Use Markdown formatting to preserve headers, bold text, lists, and structure. accurate OCR is critical.`
           },
