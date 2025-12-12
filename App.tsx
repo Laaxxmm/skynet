@@ -13,119 +13,7 @@ import { checkAndSendNotifications } from './services/notificationService';
 import { getAgreements, deleteAgreement } from './services/databaseService';
 
 // Mock Initial Data with Raw Content for realistic preview
-const INITIAL_AGREEMENTS: Agreement[] = [
-  {
-    id: '1',
-    fileName: 'Distributor_Agreement_Skynet.pdf',
-    type: 'Distributor Agreement',
-    partyA: 'SKYNET ELECTRONIC PVT LTD',
-    partyB: 'KONNECT COMMUNICATION',
-    startDate: '2024-08-25',
-    renewalDate: '2025-07-25',
-    expiryDate: '2025-08-25',
-    location: 'Hubli, Karnataka',
-    status: AgreementStatus.EXPIRING_SOON,
-    riskScore: 65,
-    summary: 'Distributor agreement for OPPO mobile phones in Bijapur Region. Includes specific cross-regional sales penalties.',
-    rawContent: `DISTRIBUTOR AGREEMENT
-
-This Agreement is made on this 25th day of August, 2024.
-
-BETWEEN
-
-SKYNET ELECTRONIC PVT LTD, a private limited company incorporated under the Companies Act, 2013, having its registered office at Hubli, Karnataka (hereinafter referred to as the "Company", which expression shall, unless it be repugnant to the context or meaning thereof, be deemed to include its successors and assigns) of the FIRST PART;
-
-AND
-
-KONNECT COMMUNICATION, a proprietorship concern having its principal place of business at Bijapur, Karnataka (hereinafter referred to as the "Distributor", which expression shall, unless it be repugnant to the context or meaning thereof, be deemed to include its successors and permitted assigns) of the SECOND PART.
-
-WHEREAS:
-A. The Company is engaged in the business of manufacturing and trading mobile phones and accessories under the brand name "OPPO".
-B. The Distributor has represented that it has the necessary infrastructure and capacity to distribute the Company's products in the Designated Territory.
-
-NOW, THEREFORE, IT IS HEREBY AGREED AS FOLLOWS:
-
-1. APPOINTMENT & TERRITORY
-1.1 The Company hereby appoints the Distributor as its non-exclusive distributor for the sale of OPPO Mobile Phones and Accessories (the "Products") within the territory of Bijapur District (the "Territory").
-
-2. TERM
-2.1 This Agreement shall come into effect on 25th August, 2024 (the "Effective Date") and shall remain valid for a period of 12 (Twelve) months, expiring on 25th August, 2025, unless terminated earlier in accordance with the provisions hereof.
-
-3. PRICING & PAYMENT
-3.1 The Products shall be supplied to the Distributor at the Dealer Price list declared by the Company from time to time.
-3.2 Payment shall be made in advance via RTGS/NEFT.
-
-4. OBLIGATIONS OF DISTRIBUTOR
-4.1 The Distributor shall maintain sufficient stock of the Products.
-4.7 Cross Regional Sales: The Distributor strictly agrees NOT to sell, supply, or distribute the Products outside the designated Territory.
-4.8 Penalty: Any violation of Clause 4.7 shall attract a penalty of INR 50,000/- per instance and may lead to immediate termination of this Agreement.
-
-IN WITNESS WHEREOF the Parties have signed this Agreement on the date first above written.
-
-For SKYNET ELECTRONIC PVT LTD
-[Signature]
-
-For KONNECT COMMUNICATION
-[Signature]`
-  },
-  {
-    id: '2',
-    fileName: 'Rental_Mysore.pdf',
-    type: 'Rental Agreement',
-    partyA: 'SKYNET ELECTRONIC PVT LTD',
-    partyB: 'B C SATISH KUMAR',
-    startDate: '2016-03-01',
-    renewalDate: '2023-04-01',
-    expiryDate: '2024-03-01',
-    location: 'Mysore, Karnataka',
-    status: AgreementStatus.EXPIRED,
-    riskScore: 95,
-    summary: 'Commercial office space rental on 3rd Floor, Vishwamanava Double Road. 15% escalation every 3 years.',
-    rawContent: `RENTAL AGREEMENT
-
-THIS RENTAL AGREEMENT is made and executed on this 1st day of March, 2016 at Mysore.
-
-BETWEEN
-
-Sri. B C SATISH KUMAR, residing at Mysore (hereinafter called the "LESSOR")
-AND
-M/s SKYNET ELECTRONIC PVT LTD, represented by its Director (hereinafter called the "LESSEE")
-
-WITNESSETH:
-
-1. The Lessor is the absolute owner of the commercial property situated at 3rd Floor, Vishwamanava Double Road, Mysore.
-2. The Lessee has approached the Lessor to take the schedule premises on rent for their office purpose.
-
-TERMS AND CONDITIONS:
-
-1. DURATION: The duration of the lease shall be for a period of 11 months commencing from 01-03-2016.
-2. RENT: The monthly rent payable is Rs. 25,000/- (Rupees Twenty Five Thousand Only).
-3. ESCALATION: The rent shall be escalated by 5% every 11 months upon renewal.
-4. DEPOSIT: An interest-free security deposit of Rs. 2,50,000/- has been paid.
-
-IN WITNESS WHEREOF the parties have signed this deed.
-
-LESSOR
-[Signature]
-
-LESSEE
-[Signature]`
-  },
-  {
-    id: '3',
-    fileName: 'Vendor_3S_Mfg.pdf',
-    type: 'Vendor Agreement',
-    partyA: 'SKYNET ELECTRONIC PVT LTD',
-    partyB: '3S MANUFACTURERS & EXPORTS',
-    startDate: '2025-09-12',
-    renewalDate: '2026-08-12',
-    expiryDate: '2026-09-12',
-    location: 'Bangalore, Karnataka',
-    status: AgreementStatus.ACTIVE,
-    riskScore: 10,
-    summary: 'Vendor agreement for production and installation of indoor/outdoor advertising (Kannada & English Logos).'
-  }
-];
+const INITIAL_AGREEMENTS: Agreement[] = [];
 
 // Initial Settings
 const INITIAL_SETTINGS: AppSettings = {
@@ -147,7 +35,9 @@ export default function App() {
         if (data && data.length > 0) {
           // Transform Supabase data to Agreement type if needed, or just set it
           // Assuming data matches Agreement interface roughly
-          setAgreements(prev => [...prev, ...data as unknown as Agreement[]]);
+          setAgreements(data as unknown as Agreement[]);
+        } else {
+          setAgreements([]);
         }
       });
     }

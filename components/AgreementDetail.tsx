@@ -128,7 +128,7 @@ export const AgreementDetail: React.FC<AgreementDetailProps> = ({ agreement, onB
               onClick={() => {
                 const subject = `Renewal Reminder: ${agreement.type} - ${agreement.partyB}`;
                 const body = `Hello,\n\nThis is a reminder that the ${agreement.type} with ${agreement.partyB} is expiring on ${agreement.expiryDate}.\n\nPlease take necessary action.\n\nRegards,\nSkynet Admin`;
-                window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+                window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
               }}
               className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 font-medium transition-colors flex items-center"
             >
