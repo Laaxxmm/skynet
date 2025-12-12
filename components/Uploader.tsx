@@ -58,20 +58,20 @@ export const Uploader: React.FC<UploaderProps> = ({ onUploadComplete, onCancel }
           try {
             const { error: dbError } = await saveAgreement(newAgreement);
             if (dbError) {
-              console.error("Failed to save to database:", dbError);
-              const msg = `Database Save Failed: ${dbError.message}. Details: ${dbError.details || ''} Hint: ${dbError.hint || ''}`;
+              console.error("Failed to save to database: Operation failed.");
+              const msg = `Database Save Failed. Please try again.`;
               alert(msg);
               setError(msg);
             }
           } catch (e: any) {
-            console.error("Unexpected DB Error:", e);
+            console.error("Unexpected DB Error: Operation failed.");
             setError("Database connection failed.");
           }
 
           onUploadComplete(newAgreement);
         } catch (err) {
           setError("Failed to extract data using AI. Please try again.");
-          console.error(err);
+          console.error("AI Extraction Failed.");
         } finally {
           setIsProcessing(false);
         }
