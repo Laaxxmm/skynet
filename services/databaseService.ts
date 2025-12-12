@@ -40,7 +40,7 @@ export const saveAgreement = async (agreement: ExtractionResult | Agreement) => 
         .single();
 
     if (error) {
-        console.error('Error saving agreement:', error);
+        console.error('Error saving agreement: Operation failed.');
         return { data: null, error };
     }
 
@@ -54,7 +54,7 @@ export const getAgreements = async () => {
         .order('created_at', { ascending: false });
 
     if (error) {
-        console.error('Error fetching agreements:', error);
+        console.error('Error fetching agreements: Operation failed.');
         return [];
     }
 
@@ -68,7 +68,7 @@ export const deleteAgreement = async (id: string) => {
         .eq('id', id);
 
     if (error) {
-        console.error('Error deleting agreement:', error);
+        console.error('Error deleting agreement: Operation failed.');
         return { error };
     }
 
