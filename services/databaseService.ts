@@ -10,12 +10,20 @@ export const saveAgreement = async (agreement: ExtractionResult | Agreement) => 
         return null;
     }
 
+    // Sanitize data: PostgreSQL date columns fail on empty strings. Convert to null.
+    const sanitizedAgreement = {
+        ...agreement,
+        startDate: agreement.startDate || null,
+        renewalDate: agreement.renewalDate || null,
+        expiryDate: agreement.expiryDate || null,
+    };
+
     const { data, error } = await supabase
         .from('agreements')
         .insert([
             {
                 user_id: user.id,
-                ...agreement,
+                ...sanitizedAgreement,
                 created_at: new Date().toISOString(),
             }
         ])
