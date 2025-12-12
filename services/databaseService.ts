@@ -60,3 +60,17 @@ export const getAgreements = async () => {
 
     return data;
 };
+
+export const deleteAgreement = async (id: string) => {
+    const { error } = await supabase
+        .from('agreements')
+        .delete()
+        .eq('id', id);
+
+    if (error) {
+        console.error('Error deleting agreement:', error);
+        return { error };
+    }
+
+    return { error: null };
+};

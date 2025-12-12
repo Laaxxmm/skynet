@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Agreement, AgreementStatus } from '../types';
-import { ArrowLeft, Calendar, MapPin, Users, FileText, AlertTriangle, RefreshCw, CheckCircle, Edit3, Save, Download, Send, Eye } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, Users, FileText, AlertTriangle, RefreshCw, CheckCircle, Edit3, Save, Download, Send, Eye, MessageCircle } from 'lucide-react';
 import { generateRenewalDraft } from '../services/geminiService';
 
 interface AgreementDetailProps {
@@ -124,6 +124,22 @@ export const AgreementDetail: React.FC<AgreementDetailProps> = ({ agreement, onB
                 Approval Pending
               </button>
             )}
+            <button
+              onClick={() => {
+                const subject = `Renewal Reminder: ${agreement.type} - ${agreement.partyB}`;
+                const body = `Hello,\n\nThis is a reminder that the ${agreement.type} with ${agreement.partyB} is expiring on ${agreement.expiryDate}.\n\nPlease take necessary action.\n\nRegards,\nSkynet Admin`;
+                window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+              }}
+              className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 font-medium transition-colors flex items-center"
+            >
+              <Send className="w-4 h-4 mr-2" /> Email
+            </button>
+            <button
+              onClick={() => alert("WhatsApp integration requires backend configuration. Please check Settings.")}
+              className="px-4 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 font-medium transition-colors flex items-center"
+            >
+              <MessageCircle className="w-4 h-4 mr-2" /> WhatsApp
+            </button>
           </div>
         </div>
       </div>
