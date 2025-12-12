@@ -86,7 +86,14 @@ export default function App() {
   // Grouped Agreements
   const groupedAgreements = useMemo(() => {
     return filteredAgreements.reduce((acc, agreement) => {
-      const type = agreement.type || 'Uncategorized';
+      // Normalize type to Title Case to merge "RENTAL AGREEMENT" and "Rental Agreement"
+      const rawType = agreement.type || 'Uncategorized';
+      const type = rawType
+        .toLowerCase()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+
       if (!acc[type]) acc[type] = [];
       acc[type].push(agreement);
       return acc;
@@ -170,7 +177,7 @@ export default function App() {
         <nav className="flex-1 px-4 space-y-2 mt-4">
           <button
             onClick={() => { setView('dashboard'); setSelectedAgreementId(null); }}
-            className={`flex items-center w-full px-4 py-3 rounded-lg transition-all ${view === 'dashboard' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/50' : 'hover:bg-slate-800'}`}
+            className={`flex items-center w-full px-4 py-3 rounded-lg transition-all ${view === 'dashboard' || view === 'grouped' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/50' : 'hover:bg-slate-800'}`}
           >
             <LayoutDashboard size={18} className="mr-3" /> Dashboard
           </button>
@@ -198,7 +205,7 @@ export default function App() {
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-slate-800">
-              {view === 'dashboard' ? 'Skynet Agreements' : view === 'settings' ? 'System Configuration' : 'Agreement Details'}
+              {view === 'dashboard' || view === 'grouped' ? 'Skynet Agreements' : view === 'settings' ? 'System Configuration' : 'Agreement Details'}
             </h1>
             <p className="text-slate-500 text-sm">Welcome back, Admin</p>
           </div>
@@ -211,7 +218,7 @@ export default function App() {
               </div>
             )}
 
-            {view === 'dashboard' && (
+            {(view === 'dashboard' || view === 'grouped') && (
               <>
                 <button
                   onClick={handleSendNotifications}
@@ -231,7 +238,7 @@ export default function App() {
           </div>
         </header>
 
-        {view === 'dashboard' ? (
+        {view === 'dashboard' || view === 'grouped' ? (
           <div className="space-y-8 animate-fade-in">
             {/* Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
