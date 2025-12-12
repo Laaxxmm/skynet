@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { LayoutDashboard, FileText, Upload, Filter, Search, Bell, Settings as SettingsIcon, LogOut, Send, CheckCircle } from 'lucide-react';
+import { LayoutDashboard, FileText, Upload, Filter, Search, Bell, Settings as SettingsIcon, LogOut, Send, CheckCircle, Menu, X } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Agreement, AgreementStatus, DashboardStats, AppSettings } from './types';
 import { StatsCard } from './components/StatsCard';
@@ -49,6 +49,7 @@ export default function App() {
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [settings, setSettings] = useState<AppSettings>(INITIAL_SETTINGS);
   const [notificationStatus, setNotificationStatus] = useState<{ loading: boolean, message: string | null }>({ loading: false, message: null });
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 
   const stats: DashboardStats = useMemo(() => {
@@ -167,22 +168,50 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex bg-slate-50">
+    <div className="min-h-screen flex bg-slate-50 relative">
 
-      {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-slate-300 hidden md:flex flex-col fixed h-full z-10">
-        <div className="p-6 flex items-center text-white font-bold text-xl tracking-tight">
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 bg-slate-900 text-white p-4 z-30 flex justify-between items-center shadow-md">
+        <div className="flex items-center font-bold text-xl tracking-tight">
           <FileText className="mr-2 text-indigo-400" /> Skynet
         </div>
+        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-slate-300 hover:text-white">
+          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-20 md:hidden backdrop-blur-sm"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={`
+        fixed md:static inset-y-0 left-0 z-30 w-64 bg-slate-900 text-slate-300 flex flex-col h-full transition-transform duration-300 ease-in-out shadow-xl md:shadow-none
+        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
+        <div className="p-6 hidden md:flex items-center text-white font-bold text-xl tracking-tight">
+          <FileText className="mr-2 text-indigo-400" /> Skynet
+        </div>
+
+        {/* Mobile Menu Header inside Sidebar */}
+        <div className="md:hidden p-6 flex items-center justify-between text-white font-bold text-xl border-b border-slate-800">
+          <span className="flex items-center"><FileText className="mr-2 text-indigo-400" /> Skynet</span>
+          <button onClick={() => setIsMobileMenuOpen(false)}><X size={20} className="text-slate-400" /></button>
+        </div>
+
         <nav className="flex-1 px-4 space-y-2 mt-4">
           <button
-            onClick={() => { setView('dashboard'); setSelectedAgreementId(null); }}
+            onClick={() => { setView('dashboard'); setSelectedAgreementId(null); setIsMobileMenuOpen(false); }}
             className={`flex items-center w-full px-4 py-3 rounded-lg transition-all ${view === 'dashboard' || view === 'grouped' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/50' : 'hover:bg-slate-800'}`}
           >
             <LayoutDashboard size={18} className="mr-3" /> Dashboard
           </button>
           <button
-            onClick={() => { setView('settings'); setSelectedAgreementId(null); }}
+            onClick={() => { setView('settings'); setSelectedAgreementId(null); setIsMobileMenuOpen(false); }}
             className={`flex items-center w-full px-4 py-3 rounded-lg transition-all ${view === 'settings' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/50' : 'hover:bg-slate-800'}`}
           >
             <SettingsIcon size={18} className="mr-3" /> Settings
@@ -199,7 +228,7 @@ export default function App() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-64 p-4 md:p-8">
+      <main className="flex-1 p-4 md:p-8 pt-20 md:pt-8 w-full overflow-x-hidden">
 
         {/* Top Bar */}
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">

@@ -96,32 +96,32 @@ export const AgreementDetail: React.FC<AgreementDetailProps> = ({ agreement, onB
             </p>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3 mt-4 md:mt-0">
             <button
               onClick={handleDownloadOriginal}
-              className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 font-medium transition-colors flex items-center"
+              className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 font-medium transition-colors flex items-center text-sm"
             >
-              <Download className="w-4 h-4 mr-2" /> Download Original
+              <Download className="w-4 h-4 mr-2" /> Original
             </button>
             <button
               onClick={() => setShowOriginalModal(true)}
-              className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 font-medium transition-colors flex items-center"
+              className="px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 font-medium transition-colors flex items-center text-sm"
             >
-              <Eye className="w-4 h-4 mr-2" /> View Original
+              <Eye className="w-4 h-4 mr-2" /> View
             </button>
             {(agreement.status === AgreementStatus.EXPIRING_SOON || agreement.status === AgreementStatus.EXPIRED) && (
               <button
                 onClick={handleGenerateRenewal}
                 disabled={isGenerating}
-                className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium shadow-md shadow-indigo-200 transition-all flex items-center"
+                className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium shadow-md shadow-indigo-200 transition-all flex items-center text-sm"
               >
                 {isGenerating ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <FileText className="w-4 h-4 mr-2" />}
-                {isGenerating ? 'Draft Renewal...' : 'Renew Agreement'}
+                {isGenerating ? 'Drafting...' : 'Renew'}
               </button>
             )}
             {agreement.status === AgreementStatus.PENDING_APPROVAL && (
-              <button disabled className="px-4 py-2 bg-purple-100 text-purple-700 border border-purple-200 rounded-lg font-medium opacity-75 cursor-not-allowed">
-                Approval Pending
+              <button disabled className="px-4 py-2 bg-purple-100 text-purple-700 border border-purple-200 rounded-lg font-medium opacity-75 cursor-not-allowed text-sm">
+                Pending
               </button>
             )}
             <button
@@ -130,13 +130,13 @@ export const AgreementDetail: React.FC<AgreementDetailProps> = ({ agreement, onB
                 const body = `Hello,\n\nThis is a reminder that the ${agreement.type} with ${agreement.partyB} is expiring on ${agreement.expiryDate}.\n\nPlease take necessary action.\n\nRegards,\nSkynet Admin`;
                 window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
               }}
-              className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 font-medium transition-colors flex items-center"
+              className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 font-medium transition-colors flex items-center text-sm"
             >
               <Send className="w-4 h-4 mr-2" /> Email
             </button>
             <button
               onClick={() => alert("WhatsApp integration requires backend configuration. Please check Settings.")}
-              className="px-4 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 font-medium transition-colors flex items-center"
+              className="px-4 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 font-medium transition-colors flex items-center text-sm"
             >
               <MessageCircle className="w-4 h-4 mr-2" /> WhatsApp
             </button>
