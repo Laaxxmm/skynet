@@ -10,7 +10,7 @@ import { Auth } from './components/Auth';
 import { useAuth } from './context/AuthContext';
 import { Settings } from './components/Settings';
 import { checkAndSendNotifications } from './services/notificationService';
-import { getAgreements, deleteAgreement } from './services/databaseService';
+import { getAgreements, deleteAgreement, deleteAllAgreements } from './services/databaseService';
 
 // Mock Initial Data with Raw Content for realistic preview
 const INITIAL_AGREEMENTS: Agreement[] = [];
@@ -116,6 +116,16 @@ export default function App() {
 
     } catch (e) {
       setNotificationStatus({ loading: false, message: "Critical Error sending notifications." });
+    }
+  };
+
+  const handleReset = async () => {
+    const { error } = await deleteAllAgreements();
+    if (error) {
+      alert('Failed to reset database: ' + error.message);
+    } else {
+      setAgreements([]);
+      alert('Database reset successfully. All agreements have been removed.');
     }
   };
 
@@ -430,7 +440,7 @@ export default function App() {
             </div>
           </div>
         ) : view === 'settings' ? (
-          <Settings settings={settings} onSave={setSettings} />
+          <Settings settings={settings} onSave={setSettings} onReset={handleReset} />
         ) : (
           selectedAgreementId && (
             <AgreementDetail

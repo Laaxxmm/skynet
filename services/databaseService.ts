@@ -74,3 +74,17 @@ export const deleteAgreement = async (id: string) => {
 
     return { error: null };
 };
+
+export const deleteAllAgreements = async () => {
+    const { error } = await supabase
+        .from('agreements')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all rows where ID is not nil (effectively all)
+
+    if (error) {
+        console.error('Error resetting database:', error);
+        return { error };
+    }
+
+    return { error: null };
+};

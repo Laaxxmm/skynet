@@ -1,14 +1,15 @@
 
 import React, { useState } from 'react';
-import { Save, Bell, Mail, Smartphone, Key, Globe } from 'lucide-react';
+import { Save, Bell, Mail, Smartphone, Key, Globe, AlertTriangle } from 'lucide-react';
 import { AppSettings } from '../types';
 
 interface SettingsProps {
   settings: AppSettings;
   onSave: (newSettings: AppSettings) => void;
+  onReset: () => void;
 }
 
-export const Settings: React.FC<SettingsProps> = ({ settings, onSave }) => {
+export const Settings: React.FC<SettingsProps> = ({ settings, onSave, onReset }) => {
   const [formData, setFormData] = useState<AppSettings>(settings);
   const [saved, setSaved] = useState(false);
 
@@ -32,7 +33,7 @@ export const Settings: React.FC<SettingsProps> = ({ settings, onSave }) => {
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
         <div className="flex items-center mb-6 border-b border-slate-100 pb-4">
           <div className="p-2 bg-indigo-50 rounded-lg mr-4">
-             <Bell className="w-6 h-6 text-indigo-600" />
+            <Bell className="w-6 h-6 text-indigo-600" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-slate-800">Notification Settings</h2>
@@ -41,7 +42,7 @@ export const Settings: React.FC<SettingsProps> = ({ settings, onSave }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          
+
           {/* WhatsApp Configuration */}
           <div>
             <h3 className="text-sm uppercase tracking-wide text-slate-400 font-bold mb-4 flex items-center">
@@ -62,7 +63,7 @@ export const Settings: React.FC<SettingsProps> = ({ settings, onSave }) => {
                   />
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Instance ID</label>
                 <div className="relative">
@@ -95,7 +96,7 @@ export const Settings: React.FC<SettingsProps> = ({ settings, onSave }) => {
 
           {/* Contact Details */}
           <div>
-             <h3 className="text-sm uppercase tracking-wide text-slate-400 font-bold mb-4 flex items-center">
+            <h3 className="text-sm uppercase tracking-wide text-slate-400 font-bold mb-4 flex items-center">
               <Mail className="w-4 h-4 mr-2" /> Notification Recipients
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -128,7 +129,7 @@ export const Settings: React.FC<SettingsProps> = ({ settings, onSave }) => {
 
           <div className="pt-6 border-t border-slate-100 flex items-center justify-end">
             {saved && <span className="text-green-600 font-medium mr-4 text-sm animate-fade-in">Settings Saved Successfully!</span>}
-            <button 
+            <button
               type="submit"
               className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium shadow-md shadow-indigo-200 hover:bg-indigo-700 transition-all flex items-center"
             >
@@ -137,6 +138,29 @@ export const Settings: React.FC<SettingsProps> = ({ settings, onSave }) => {
           </div>
 
         </form>
+
+        {/* Danger Zone */}
+        <div className="mt-12 pt-8 border-t border-red-100">
+          <h3 className="text-sm uppercase tracking-wide text-red-500 font-bold mb-4 flex items-center">
+            <AlertTriangle className="w-4 h-4 mr-2" /> Danger Zone
+          </h3>
+          <div className="bg-red-50 border border-red-100 rounded-xl p-6 flex items-center justify-between">
+            <div>
+              <h4 className="text-red-800 font-medium">Reset Database</h4>
+              <p className="text-red-600 text-sm mt-1">Permanently delete all agreements and start fresh. This action cannot be undone.</p>
+            </div>
+            <button
+              onClick={() => {
+                if (window.confirm('CRITICAL WARNING: This will permanently DELETE ALL AGREEMENTS from the database. Are you absolutely sure?')) {
+                  onReset();
+                }
+              }}
+              className="bg-white border border-red-200 text-red-600 hover:bg-red-600 hover:text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm"
+            >
+              Reset Database
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
