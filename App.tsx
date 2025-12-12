@@ -190,7 +190,7 @@ export default function App() {
 
       {/* Sidebar */}
       <aside className={`
-        fixed md:static inset-y-0 left-0 z-30 w-64 bg-slate-900 text-slate-300 flex flex-col h-full transition-transform duration-300 ease-in-out shadow-xl md:shadow-none
+        fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-slate-300 flex flex-col h-full transition-transform duration-300 ease-in-out shadow-xl md:shadow-none
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         <div className="p-6 hidden md:flex items-center text-white font-bold text-xl tracking-tight">
@@ -228,7 +228,7 @@ export default function App() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-4 md:p-8 pt-20 md:pt-8 w-full overflow-x-hidden">
+      <main className="flex-1 md:ml-64 p-4 md:p-8 pt-20 md:pt-8 w-full overflow-x-hidden">
 
         {/* Top Bar */}
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
