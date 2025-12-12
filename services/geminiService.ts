@@ -2,7 +2,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { ExtractionResult, Agreement } from "../types";
 
-import { saveAgreement } from '../services/databaseService';
+
 
 // Initialize Gemini Client
 // In a real production app, this should be proxied through a backend to protect the key.
@@ -74,14 +74,8 @@ export const extractAgreementData = async (
 
     const result = JSON.parse(text) as ExtractionResult;
 
-    // Save to Supabase (Awaited to ensure persistence)
-    try {
-      await saveAgreement(result);
-    } catch (dbError) {
-      console.error("Failed to save to Supabase:", dbError);
-      // We don't throw here because we still want to return the result to the UI
-    }
-
+    // Return the result directly. The calling component (Uploader) will handle saving 
+    // after adding metadata like status and risk score.
     return result;
 
   } catch (error) {
