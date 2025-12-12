@@ -24,11 +24,10 @@ export const saveAgreement = async (agreement: ExtractionResult | Agreement) => 
 
     if (error) {
         console.error('Error saving agreement:', error);
-        // Don't throw, just log. We don't want to break the UI if DB fails.
-        return null;
+        return { data: null, error };
     }
 
-    return data;
+    return { data, error: null };
 };
 
 export const getAgreements = async () => {

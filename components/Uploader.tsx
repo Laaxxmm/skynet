@@ -56,10 +56,14 @@ export const Uploader: React.FC<UploaderProps> = ({ onUploadComplete, onCancel }
 
           // Save to Supabase
           try {
-            await saveAgreement(newAgreement);
-          } catch (dbError) {
-            console.error("Failed to save to database:", dbError);
-            // We continue even if save fails, so the user sees the result locally at least
+            const { error: dbError } = await saveAgreement(newAgreement);
+            if (dbError) {
+              console.error("Failed to save to database:", dbError);
+              setError(`Saved locally, but failed to sync to database: ${dbError.message}`);
+            }
+          } catch (e: any) {
+            console.error("Unexpected DB Error:", e);
+            setError("Database connection failed.");
           }
 
           onUploadComplete(newAgreement);
