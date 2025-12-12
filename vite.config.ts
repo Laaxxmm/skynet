@@ -1,5 +1,6 @@
 import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
+// Deployment Trigger: 2025-12-12 10:12:00
 import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
